@@ -1,42 +1,83 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QUENCH</title>
-    <!-- EmailJS Library -->
+    <title>QUENCH | Next-Gen Sports Hydration</title>
+    
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    
+    <style>
+        :root { --neon-bg: #dff84b; --dark-blue: #1c234a; --text-dark: #11152d; }
+        body { font-family: sans-serif; background: #fff; color: var(--text-dark); margin: 0; }
+        .modal { display: none; }
+        .modal.active { display: block; }
+    </style>
+
     <script type="text/javascript">
        (function(){
           emailjs.init("q23wZuAx1DG8TFEzV");
        })();
     </script>
-    <style>
-        body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .container { text-align: center; }
-    </style>
 </head>
 <body>
 
-    <div class="container">
+    <div id="app">
         <h1>QUENCH Hydration</h1>
-        <!-- Your buttons and inputs go here -->
+        
+        <div id="news-form">
+            <input type="email" id="newsletter-input" placeholder="Enter email for 10% off">
+            <button onclick="processNewsletter(event)">Join VIP</button>
+        </div>
+        <div id="news-success" style="display:none;">Thanks for joining!</div>
+
+        <div id="checkout-modal" class="modal">
+            <input type="email" id="checkout-email-input" placeholder="Customer Email">
+            <button onclick="processOrder(event)">Confirm Order</button>
+        </div>
+        
+        <div id="tracker-modal" class="modal">Order Sent! Tracking now...</div>
     </div>
 
     <script>
-        // Use these functions in your HTML buttons: onclick="handleOrder()"
-        function handleNewsletter(email) {
+        // State variables
+        let cart = [];
+        let total = 0;
+
+        function sendNewsletterEmail(email) {
             emailjs.send("service_n2x6gnn", "template_5p2vnsb", {
                 to_email: email,
-                message: "Welcome to the club!"
-            }).then(() => alert("Sent!"), (err) => console.log(err));
+                message: "Welcome to the QUENCH VIP Club! Your 10% off code is: STAYHYDRATED10."
+            }).then(() => console.log("Newsletter sent!"), (err) => console.log("Failed", err));
         }
 
-        function handleOrder(email, total) {
+        function sendOrderEmail(email, total) {
             emailjs.send("service_3ize0sj", "template_grk79o4", {
                 to_email: email,
-                order_total: total
-            }).then(() => alert("Order Receipt Sent!"), (err) => console.log(err));
+                order_total: total.toFixed(2)
+            }).then(() => console.log("Order receipt sent!"), (err) => console.log("Failed", err));
+        }
+
+        function processNewsletter(event) {
+            event.preventDefault(); 
+            const userEmail = document.getElementById('newsletter-input').value;
+            document.getElementById('news-form').style.display = 'none';
+            document.getElementById('news-success').style.display = 'block';
+            sendNewsletterEmail(userEmail);
+        }
+
+        function processOrder(event) {
+            event.preventDefault(); 
+            const buyerEmail = document.getElementById('checkout-email-input').value;
+            document.getElementById('checkout-modal').classList.remove('active');
+            document.getElementById('tracker-modal').classList.add('active');
+            
+            sendOrderEmail(buyerEmail, total);
+            
+            cart = []; total = 0;
+            if(typeof updateCartUI === 'function') updateCartUI();
+            if(typeof runTrackerSimulation === 'function') runTrackerSimulation();
         }
     </script>
 </body>
