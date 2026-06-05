@@ -5,16 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>QUENCH | Next-Gen Sports Hydration</title>
     
+    <!-- Libraries -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     
-    <style>
-        :root { --neon-bg: #dff84b; --dark-blue: #1c234a; --text-dark: #11152d; }
-        body { font-family: sans-serif; background: #fff; color: var(--text-dark); margin: 0; }
-        .modal { display: none; }
-        .modal.active { display: block; }
-    </style>
-
     <script type="text/javascript">
        (function(){
           emailjs.init("q23wZuAx1DG8TFEzV");
@@ -23,28 +17,10 @@
 </head>
 <body>
 
-    <div id="app">
-        <h1>QUENCH Hydration</h1>
-        
-        <div id="news-form">
-            <input type="email" id="newsletter-input" placeholder="Enter email for 10% off">
-            <button onclick="processNewsletter(event)">Join VIP</button>
-        </div>
-        <div id="news-success" style="display:none;">Thanks for joining!</div>
-
-        <div id="checkout-modal" class="modal">
-            <input type="email" id="checkout-email-input" placeholder="Customer Email">
-            <button onclick="processOrder(event)">Confirm Order</button>
-        </div>
-        
-        <div id="tracker-modal" class="modal">Order Sent! Tracking now...</div>
-    </div>
+    <!-- YOUR EXISTING HTML CONTENT GOES HERE -->
 
     <script>
-        // State variables
-        let cart = [];
-        let total = 0;
-
+        // --- EMAIL FUNCTIONS ---
         function sendNewsletterEmail(email) {
             emailjs.send("service_n2x6gnn", "template_5p2vnsb", {
                 to_email: email,
@@ -59,6 +35,7 @@
             }).then(() => console.log("Order receipt sent!"), (err) => console.log("Failed", err));
         }
 
+        // --- INTERACTION FUNCTIONS ---
         function processNewsletter(event) {
             event.preventDefault(); 
             const userEmail = document.getElementById('newsletter-input').value;
@@ -72,13 +49,13 @@
             const buyerEmail = document.getElementById('checkout-email-input').value;
             document.getElementById('checkout-modal').classList.remove('active');
             document.getElementById('tracker-modal').classList.add('active');
-            
             sendOrderEmail(buyerEmail, total);
-            
-            cart = []; total = 0;
-            if(typeof updateCartUI === 'function') updateCartUI();
-            if(typeof runTrackerSimulation === 'function') runTrackerSimulation();
+            cart = []; total = 0; updateCartUI();
+            runTrackerSimulation();
         }
+
+        // --- OTHER UTILS ---
+        // (Ensure all your other functions like updateCartUI, toggleTheme, etc., are here too)
     </script>
 </body>
 </html>
